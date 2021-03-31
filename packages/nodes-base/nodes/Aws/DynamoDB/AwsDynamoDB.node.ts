@@ -21,11 +21,11 @@ import {
 import {
 	IAttributeValueUi,
 	IRequestBody,
-	PartitionKeyDetails,
 } from './types';
 
 import {
 	adjustExpressionAttributeValues,
+	populatePartitionKey,
 	simplifyItem,
 	validateJSON,
 } from './utils';
@@ -77,12 +77,12 @@ export class AwsDynamoDB implements INodeType {
 					{
 						name: 'Query',
 						value: 'query',
-						description: 'Retrieve all items based on a partition key.',
+						description: 'Retrieve items based on a partition key.',
 					},
 					{
 						name: 'Scan',
 						value: 'scan',
-						description: 'Retrieve all items based on any property.',
+						description: 'Retrieve items based on any property.',
 					},
 				],
 			},
@@ -168,30 +168,10 @@ export class AwsDynamoDB implements INodeType {
 				};
 
 				if (jsonEnabled) {
-
 					const jsonItem = this.getNodeParameter('jsonItem', i) as string;
 					body.Key = validateJSON(jsonItem);
-
 				} else {
-
-					const partitionKey = this.getNodeParameter('partitionKey', i) as PartitionKeyDetails;
-
-					if (!partitionKey.details) {
-						throw new Error('Please specify name, type and value of the partition key for the item to retrieve.');
-					}
-
-					const { name, type, value } = partitionKey.details;
-
-					if ([name, type, value].some(property => property === undefined)) {
-						throw new Error('Please specify name, type and value of the partition key for the item to retrieve.');
-					}
-
-					body.Key = {
-						[name]: {
-							[type]: value,
-						},
-					};
-
+					body.Key = populatePartitionKey.call(this, i);
 				}
 
 				const additionalFields = this.getNodeParameter('additionalFields', i) as {
@@ -233,23 +213,28 @@ export class AwsDynamoDB implements INodeType {
 					TableName: this.getNodeParameter('tableName', i) as string,
 					KeyConditionExpression: this.getNodeParameter('keyConditionExpression', i) as string,
 					ExpressionAttributeValues: adjustExpressionAttributeValues(eavUi),
-					ConsistentRead: true,
 				};
 
 				const {
-					projectionExpression,
 					indexName,
+					projectionExpression,
+					readConsistencyModel,
 				} = this.getNodeParameter('additionalFields', i) as {
-					projectionExpression: string;
 					indexName: string;
+					projectionExpression: string;
+					readConsistencyModel: 'eventuallyConsistent' | 'stronglyConsistent';
 				};
+
+				if (indexName) {
+					body.IndexName = indexName;
+				}
 
 				if (projectionExpression) {
 					body.ProjectionExpression = projectionExpression;
 				}
 
-				if (indexName) {
-					body.IndexName = indexName;
+				if (readConsistencyModel) {
+					body.ConsistentRead = readConsistencyModel === 'stronglyConsistent';
 				}
 
 				const headers = {

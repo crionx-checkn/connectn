@@ -197,75 +197,6 @@ export const operationFields = [
 			},
 		],
 	},
-	// {
-	// 	displayName: 'Partition Key Name',
-	// 	name: 'partitionKeyName',
-	// 	description: 'Name of the partition key of the item to retrieve.',
-	// 	placeholder: 'id',
-	// 	default: '',
-	// 	type: 'string',
-	// 	required: true,
-	// 	displayOptions: {
-	// 		show: {
-	// 			operation: [
-	// 				'get',
-	// 			],
-	// 			jsonEnabled: [
-	// 				false,
-	// 			],
-	// 		},
-	// 	},
-	// },
-	// {
-	// 	displayName: 'Partition Key Value',
-	// 	name: 'partitionKeyValue',
-	// 	description: 'Value of the partition key of the item to retrieve.',
-	// 	default: '',
-	// 	type: 'string',
-	// 	required: true,
-	// 	displayOptions: {
-	// 		show: {
-	// 			operation: [
-	// 				'get',
-	// 			],
-	// 			jsonEnabled: [
-	// 				false,
-	// 			],
-	// 		},
-	// 	},
-	// },
-	// {
-	// 	displayName: 'Partition Key Type',
-	// 	name: 'partitionKeyType',
-	// 	description: 'Type of the partition key of the item to retrieve.',
-	// 	default: 'S',
-	// 	type: 'options',
-	// 	required: true,
-	// 	options: [
-	// 		{
-	// 			name: 'Binary',
-	// 			value: 'B',
-	// 		},
-	// 		{
-	// 			name: 'Number',
-	// 			value: 'N',
-	// 		},
-	// 		{
-	// 			name: 'String',
-	// 			value: 'S',
-	// 		},
-	// 	],
-	// 	displayOptions: {
-	// 		show: {
-	// 			operation: [
-	// 				'get',
-	// 			],
-	// 			jsonEnabled: [
-	// 				false,
-	// 			],
-	// 		},
-	// 	},
-	// },
 	{
 		displayName: 'Additional Fields',
 		name: 'additionalFields',
@@ -392,7 +323,7 @@ export const operationFields = [
 			{
 				displayName: 'Index Name',
 				name: 'indexName',
-				description: 'Name of the index to query. This index can be any <br>secondary local or global index on the table.',
+				description: 'Name of the index to query. It can be any <br>secondary local or global index on the table.',
 				type: 'string',
 				default: '',
 			},
@@ -401,8 +332,24 @@ export const operationFields = [
 				name: 'projectionExpression',
 				description: 'Comma-separated list of attributes to retrieve.',
 				type: 'string',
-				placeholder: 'id, name',
 				default: '',
+			},
+			{
+				displayName: 'Read Consistency Model',
+				name: 'readConsistencyModel',
+				type: 'options',
+				default: 'stronglyConsistent',
+				description: 'Select the <a href="https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadConsistency.html">read consistency model</a>.',
+				options: [
+					{
+						name: 'Eventually Consistent',
+						value: 'eventuallyConsistent',
+					},
+					{
+						name: 'Strongly Consistent',
+						value: 'stronglyConsistent',
+					},
+				],
 			},
 		],
 	},
