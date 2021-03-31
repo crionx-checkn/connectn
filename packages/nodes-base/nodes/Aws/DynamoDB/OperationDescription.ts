@@ -235,22 +235,6 @@ export const operationFields = [
 	//              query
 	// ----------------------------------
 	{
-		displayName: 'Key Condition Expression',
-		name: 'keyConditionExpression',
-		description: 'Condition to determine the items to be retrieved. The condition must perform an equality test<br>on a single partition key value, in this format: <code>partitionKeyName = :partitionkeyval</code>',
-		placeholder: 'id = :id',
-		default: '',
-		type: 'string',
-		required: true,
-		displayOptions: {
-			show: {
-				operation: [
-					'query',
-				],
-			},
-		},
-	},
-	{
 		displayName: 'Expression Attribute Values',
 		name: 'expressionAttributeValues',
 		description: 'Substitution tokens for attribute names in an expression.',
@@ -307,6 +291,22 @@ export const operationFields = [
 		],
 	},
 	{
+		displayName: 'Key Condition Expression',
+		name: 'keyConditionExpression',
+		description: 'Condition to determine the items to be retrieved. The condition must perform an equality test<br>on a single partition key value, in this format: <code>partitionKeyName = :partitionkeyval</code>',
+		placeholder: 'id = :id',
+		default: '',
+		type: 'string',
+		required: true,
+		displayOptions: {
+			show: {
+				operation: [
+					'query',
+				],
+			},
+		},
+	},
+	{
 		displayName: 'Additional Fields',
 		name: 'additionalFields',
 		type: 'collection',
@@ -358,6 +358,77 @@ export const operationFields = [
 	//             scan
 	// ----------------------------------
 	{
+		displayName: 'Filter Expression',
+		name: 'filterExpression',
+		description: 'Condition to apply after the scan operation, but before the data is returned.',
+		type: 'string',
+		default: '',
+		placeholder: 'username = :username',
+		displayOptions: {
+			show: {
+				operation: [
+					'scan',
+				],
+			},
+		},
+	},
+	{
+		displayName: 'Expression Attribute Values',
+		name: 'expressionAttributeValues',
+		description: 'Substitution tokens for attribute names in an expression.',
+		placeholder: 'Add Metadata',
+		type: 'fixedCollection',
+		default: '',
+		required: true,
+		typeOptions: {
+			multipleValues: true,
+			minValue: 1,
+		},
+		displayOptions: {
+			show: {
+				operation: [
+					'scan',
+				],
+			},
+		},
+		options: [
+			{
+				name: 'details',
+				displayName: 'Details',
+				values: [
+					{
+						displayName: 'Attribute',
+						name: 'attribute',
+						type: 'string',
+						default: '',
+					},
+					{
+						displayName: 'Type',
+						name: 'type',
+						type: 'options',
+						options: [
+							{
+								name: 'Number',
+								value: 'N',
+							},
+							{
+								name: 'String',
+								value: 'S',
+							},
+						],
+						default: 'S',
+					},
+					{
+						displayName: 'Value',
+						name: 'value',
+						type: 'string',
+						default: '',
+					},
+				],
+			},
+		],
+	},
+	{
 		displayName: 'Additional Fields',
 		name: 'additionalFields',
 		type: 'collection',
@@ -372,75 +443,11 @@ export const operationFields = [
 		},
 		options: [
 			{
-				displayName: 'Expression Attribute Values',
-				name: 'expressionAttributeValues',
-				description: 'Substitution tokens for attribute names in an expression.',
-				placeholder: 'Add Metadata',
-				type: 'fixedCollection',
-				default: '',
-				typeOptions: {
-					multipleValues: true,
-					minValue: 1,
-				},
-				options: [
-					{
-						name: 'details',
-						displayName: 'Details',
-						values: [
-							{
-								displayName: 'Attribute',
-								name: 'attribute',
-								type: 'string',
-								default: '',
-							},
-							{
-								displayName: 'Type',
-								name: 'type',
-								type: 'options',
-								options: [
-									{
-										name: 'Number',
-										value: 'N',
-									},
-									{
-										name: 'String',
-										value: 'S',
-									},
-								],
-								default: 'S',
-							},
-							{
-								displayName: 'Value',
-								name: 'value',
-								type: 'string',
-								default: '',
-							},
-						],
-					},
-				],
-			},
-			{
-				displayName: 'Filter Expression',
-				name: 'filterExpression',
-				description: 'Condition to apply after the scan operation, but before the data is returned.',
-				type: 'string',
-				default: '',
-				placeholder: 'id = :id',
-			},
-			{
 				displayName: 'Index Name',
 				name: 'indexName',
 				description: 'Name of the index to query. This index can be any <br>secondary local or global index on the table.',
 				type: 'string',
 				default: '',
-			},
-			{
-				displayName: 'Key Condition Expression',
-				name: 'keyConditionExpression',
-				description: 'Condition that determines the items to be retrieved. The condition must perform an equality test<br>on a single partition key value, in this format: <code>partitionKeyName = :partitionkeyval</code>',
-				placeholder: 'id = :id',
-				default: '',
-				type: 'string',
 			},
 			{
 				displayName: 'Projection Expression',
@@ -449,6 +456,23 @@ export const operationFields = [
 				type: 'string',
 				placeholder: 'id, name',
 				default: '',
+			},
+			{
+				displayName: 'Read Consistency Model',
+				name: 'readConsistencyModel',
+				type: 'options',
+				default: 'stronglyConsistent',
+				description: 'Select the <a href="https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadConsistency.html">read consistency model</a>.',
+				options: [
+					{
+						name: 'Eventually Consistent',
+						value: 'eventuallyConsistent',
+					},
+					{
+						name: 'Strongly Consistent',
+						value: 'stronglyConsistent',
+					},
+				],
 			},
 		],
 	},

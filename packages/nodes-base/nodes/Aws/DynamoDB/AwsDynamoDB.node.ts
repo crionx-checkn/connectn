@@ -256,37 +256,34 @@ export class AwsDynamoDB implements INodeType {
 
 				// https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Scan.html
 
+				const eavUi = this.getNodeParameter('expressionAttributeValues.details', i) as IAttributeValueUi[];
+
 				const body: IRequestBody = {
 					TableName: this.getNodeParameter('tableName', i) as string,
-					ConsistentRead: true,
+					FilterExpression: this.getNodeParameter('filterExpression', i) as string,
+					ExpressionAttributeValues: adjustExpressionAttributeValues(eavUi),
 				};
 
 				const {
-					expressionAttributeValues: { details: eav },
-					filterExpression,
-					keyConditionExpression,
+					indexName,
 					projectionExpression,
+					readConsistencyModel,
 				} = this.getNodeParameter('additionalFields', i) as {
-					expressionAttributeValues: { details: IAttributeValueUi[] };
-					filterExpression: string;
-					keyConditionExpression: string;
+					indexName: string;
 					projectionExpression: string;
+					readConsistencyModel: 'eventuallyConsistent' | 'stronglyConsistent';
 				};
 
-				if (eav) {
-					body.ExpressionAttributeValues = adjustExpressionAttributeValues(eav);
-				}
-
-				if (filterExpression) {
-					body.FilterExpression = filterExpression;
-				}
-
-				if (keyConditionExpression) {
-					body.KeyConditionExpression = keyConditionExpression;
+				if (indexName) {
+					body.IndexName = indexName;
 				}
 
 				if (projectionExpression) {
 					body.ProjectionExpression = projectionExpression;
+				}
+
+				if (readConsistencyModel) {
+					body.ConsistentRead = readConsistencyModel === 'stronglyConsistent';
 				}
 
 				const headers = {
